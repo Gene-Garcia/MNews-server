@@ -33,7 +33,10 @@ class Announcement {
     function getContent() { return $this->content; }
     function setContent($cnt){ $this->content = $cnt; }
     
-    
+    function prepare(){
+        $this->ctx->connect();
+    }
+
     // Database functions
     function uploadPost() {
         // check if all are populated
@@ -43,11 +46,13 @@ class Announcement {
     public static function getAnnouncements(){
         // declare seperate db context
         $dbCtx = new DatabaseContext();
+        $dbCtx->connect();
         return $dbCtx->data()["Announcements"];
     }
 
     public static function getPost($idx){
         $dbCtx = new DatabaseContext();
+        $dbCtx->connect();
 
         foreach($dbCtx->data()["Announcements"] as $value){
             if ($value->getId() == $idx){

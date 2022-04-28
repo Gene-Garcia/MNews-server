@@ -21,4 +21,22 @@
 
 require_once $_SERVER["DOCUMENT_ROOT"] . "/MNews/MNews-server" . "/models/Announcement.php";
 
+foreach(Announcement::getAnnouncements() as $v){
+    echo $v->getId() . "<br />";
+    echo $v->getSubject() . "<br />";
+    echo $v->getUploadDate() . "<br />";
+    echo $v->getContent() . "<br />";
+    echo "<hr/>";
+}
+
+$n = new Announcement(uniqid(), "New", "Date New", "Content New");
+$n->uploadPost();
+
+foreach(Announcement::getAnnouncements() as $v){
+    echo $v->getId() . "<br />";
+    echo $v->getSubject() . "<br />";
+    echo $v->getUploadDate() . "<br />";
+    echo $v->getContent() . "<br />";
+    echo "<hr/>";
+}
 ?>
