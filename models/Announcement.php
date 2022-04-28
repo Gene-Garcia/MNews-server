@@ -1,6 +1,6 @@
 <?php 
 
-require "../database/DatabaseContext.php";
+require_once $_SERVER["DOCUMENT_ROOT"] . "/MNews/MNews-server" . "/database/DatabaseContext.php";
 
 class Announcement {
     private $id;

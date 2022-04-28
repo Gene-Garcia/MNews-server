@@ -1,6 +1,6 @@
 <?php
 
-require "../models/Announcement.php";
+require_once $_SERVER["DOCUMENT_ROOT"] . "/MNews/MNews-server" . "/models/Announcement.php";
 
 class DatabaseContext {
     
