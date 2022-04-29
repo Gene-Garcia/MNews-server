@@ -1,23 +1,13 @@
 <?php
 
 // nusoap library
-require_once $_SERVER["DOCUMENT_ROOT"] . "/MNews/MNews-server" . '/lib/nusoap-0.9.5/nusoap.php';
+// require_once $_SERVER["DOCUMENT_ROOT"] . "/MNews/MNews-server" . '/lib/nusoap/nusoap.php';
+require_once $_SERVER["DOCUMENT_ROOT"] . "/MNews/MNews-server" . '/lib/nusoap-master/src/nusoap.php';
 require_once $_SERVER["DOCUMENT_ROOT"] . "/MNews/MNews-server" . "/services/AnnouncementService.php";
 
-// echo print_r(Announcements());
-
 $server = new nusoap_server();
-$namespace = "http://localhost/MNEWS/MNews-server/server.php?wsdl";
-$server->configureWSDL("Malayan News Service", "urn:mnews-server");
-
-// $server->register(
-//     "findResident",
-//     array( //$residentId, $webServiceCode
-//         "residentId" => "xsd:string", 
-//         "webServiceCode" => "xsd:string"
-//     ),
-//     array("return" => "xsd:string")
-// );
+$namespace = "http://192.168.1.16/mnews/MNews-server/server.php";
+$server->configureWSDL("MalayanNewsService", $namespace);
 
 // declaration of complex type of array of announcements
 $server->wsdl->addComplexType(
@@ -44,19 +34,42 @@ $server->wsdl->addComplexType(
     array(
         array(
             "ref" => "SOAP-ENC:arrayType", 
-            "wsdl:arrayType" => "tns:AnnouncementObj[]")               
-    )
+            "wsdl:arrayType" => "tns:AnnouncementObj[]"
+            )               
+        ),
+    "tns:AnnouncementObj"
 );
 
 $server->register(
     "Announcements", 
     array(), 
     array("return" => "tns:ArrayOfAnnouncementObj"),
-    "",
-    "",
-    "rpc",
-    "encoded",
-    "Get all available announcements"
+    // namespace:
+    $namespace,
+    // soapaction: (use default)
+    false,
+    // style: rpc or document
+    'rpc',
+    // use: encoded or literal
+    'encoded',
+    // description: documentation for the method
+    'Get all available announcements'
+);
+
+$server->register(
+    "Announcement",
+    array("idx"=>"xsd:string"),
+    array("return" => "tns:AnnouncementObj"),
+    // namespace:
+    $namespace,
+    // soapaction: (use default)
+    false,
+    // style: rpc or document
+    'rpc',
+    // use: encoded or literal
+    'encoded',
+    // description: documentation for the method
+    'Get an announcement by id'
 );
 
 $server->service(file_get_contents("php://input"))
