@@ -14,7 +14,7 @@ class AnnouncementContext {
     function __construct($db, $data){
         $this->dbCtx = $db;
         // pass by reference
-        $this->$announcements = &$dt[$key];
+        $this->announcements = &$data[$this->key];
     }
 
     function createAnnouncement($model){
