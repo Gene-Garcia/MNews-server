@@ -1,5 +1,6 @@
 <?php 
-require_once $_SERVER["DOCUMENT_ROOT"] . "/MNews/MNews-server" . '/lib/nusoap-0.9.5/nusoap.php';
+// require_once $_SERVER["DOCUMENT_ROOT"] . "/MNews/MNews-server" . '/lib/nusoap/nusoap.php';
+require_once $_SERVER["DOCUMENT_ROOT"] . "/MNews/MNews-server" . '/lib/nusoap-master/src/nusoap.php';
 $client = new nusoap_client("http://localhost/MNEWS/MNews-server/server.php?wsdl"); // Create a instance for nusoap client
 ?>
 
