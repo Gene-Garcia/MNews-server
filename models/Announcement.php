@@ -1,10 +1,10 @@
 <?php 
 
 class Announcement {
-    private $id;
-    private $subject;
-    private $uploadDate;
-    private $content;
+    public $id;
+    public $subject;
+    public $uploadDate;
+    public $content;
 
     function __construct($idx, $subj, $upDate, $cnt) {
         $this->id = $idx;
