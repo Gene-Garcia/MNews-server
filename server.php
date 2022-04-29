@@ -1,12 +1,14 @@
 <?php
 
 // nusoap library
-// require './lib/nusoap-0.9.5/nusoap.php';
-// file with the function, (findResident
-// require 'resident_management.php';
+require_once $_SERVER["DOCUMENT_ROOT"] . "/MNews/MNews-server" . '/lib/nusoap-0.9.5/nusoap.php';
+require_once $_SERVER["DOCUMENT_ROOT"] . "/MNews/MNews-server" . "/services/AnnouncementService.php";
 
-// $server = new nusoap_server();
-// $server->configureWSDL("Barangay Soap Service", "urn:barangayserver");
+// echo print_r(Announcements());
+
+$server = new nusoap_server();
+$namespace = "http://localhost/MNEWS/MNews-server/server.php?wsdl";
+$server->configureWSDL("Malayan News Service", "urn:mnews-server");
 
 // $server->register(
 //     "findResident",
@@ -17,26 +19,47 @@
 //     array("return" => "xsd:string")
 // );
 
-// $server->service(file_get_contents("php://input"))
+// declaration of complex type of array of announcements
+$server->wsdl->addComplexType(
+    "AnnouncementObj",
+    "complexType",
+    "struct",
+    "all",
+    "",
+    array(
+        "id" =>         array("name"=> "id",            "type"=>"xsd:string"),
+        "subject" =>    array("name"=> "subject",       "type"=>"xsd:string"),
+        "uploadDate" => array("name"=> "uploadDate",    "type"=>"xsd:string"),
+        "content" =>    array("name"=> "content",       "type"=>"xsd:string"),
+    )
+);
 
-require_once $_SERVER["DOCUMENT_ROOT"] . "/MNews/MNews-server" . "/models/Announcement.php";
+$server->wsdl->addComplexType(
+    "ArrayOfAnnouncementObj",
+    "complexType",
+    "array",
+    "",
+    "SOAP-ENC:Array",
+    array(),
+    array(
+        array(
+            "ref" => "SOAP-ENC:arrayType", 
+            "wsdl:arrayType" => "tns:AnnouncementObj[]")               
+    )
+);
 
-foreach(Announcement::getAnnouncements() as $v){
-    echo $v->getId() . "<br />";
-    echo $v->getSubject() . "<br />";
-    echo $v->getUploadDate() . "<br />";
-    echo $v->getContent() . "<br />";
-    echo "<hr/>";
-}
+$server->register(
+    "Announcements", 
+    array(), 
+    array("return" => "tns:ArrayOfAnnouncementObj"),
+    "",
+    "",
+    "rpc",
+    "encoded",
+    "Get all available announcements"
+);
 
-$n = new Announcement(uniqid(), "New", "Date New", "Content New");
-$n->uploadPost();
+$server->service(file_get_contents("php://input"))
 
-foreach(Announcement::getAnnouncements() as $v){
-    echo $v->getId() . "<br />";
-    echo $v->getSubject() . "<br />";
-    echo $v->getUploadDate() . "<br />";
-    echo $v->getContent() . "<br />";
-    echo "<hr/>";
-}
+
 ?>
