@@ -34,12 +34,16 @@ function PostAnnouncement($announcement){
     // validate
     if (empty($announcement)) {
         return "Invalid model";
-    } else if (empty($announcement->id) || empty($announcement->subject) || empty($announcement->uploadDate) || empty($announcement->content)){
+    } else if (empty($announcement["id"]) || empty($announcement["subject"]) || empty($announcement["uploadDate"]) || empty($announcement["content"])){
         return "Incomplete announcement details";
     } else {
         global $announcementCtx;
 
-        $announcementCtx->createAnnouncement($announcement);
+        // we need to encode array type of announcement to an Announcmenet object 
+        // because data receive is in format of Array([id] => 1234   [subject] => New subject 1234  [uploadDate] => New upload date 1235    [content] => New content 1235)
+        $encoded = new Announcement($announcement["id"], $announcement["subject"], $announcement["uploadDate"], $announcement["content"]);
+
+        $announcementCtx->createAnnouncement($encoded);
 
         return "New announcement " . $announcement->subject . " has been added";
     }
@@ -49,12 +53,14 @@ function EditAnnouncement($announcement){
     // validate
     if (empty($announcement)) {
         return "Invalid model";
-    } else if (empty($announcement->id) || empty($announcement->subject) || empty($announcement->uploadDate) || empty($announcement->content)){
+    } else if (empty($announcement["id"]) || empty($announcement["subject"]) || empty($announcement["uploadDate"]) || empty($announcement["content"])){
         return "Incomplete announcement details";
     } else {
         global $announcementCtx;
 
-        return $announcementCtx->updateAnnouncement($announcement);
+        $encoded = new Announcement($announcement["id"], $announcement["subject"], $announcement["uploadDate"], $announcement["content"]);
+
+        return $announcementCtx->updateAnnouncement($encoded);
     }
 }
 
