@@ -39,7 +39,7 @@ class AnnouncementContext {
         for($i=0; $i<count($this->announcements); $i++){
             if ($this->announcements[$i]->getId() == $model->getId()){
                 $this->announcements[$i] = $model; 
-                return "Announcement updated successfully";
+                return "Announcement " . $this->announcements[$i].getSubject() . " updated successfully";
             }
         }
 
@@ -49,8 +49,11 @@ class AnnouncementContext {
     function deleteAnnouncement($idx){
         for($i=0; $i<count($this->announcements); $i++){
             if ($this->announcements[$i]->getId() == $idx){
+                $deletedSubject = $this->announcements[$i].getSubject();
+
                 unset($this->announcements[$i]);
-                return "Announcement deleted";
+
+                return "Announcement " . $deletedSubject . " deleted";
             }
         }
 
