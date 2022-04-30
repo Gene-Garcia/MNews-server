@@ -21,8 +21,6 @@ function Announcements(){
 }
 
 function Announcement($idx){
-    print_r($idx);
-
     if (empty($idx)){
         return "Announcement id missing";
     } else {
@@ -33,7 +31,6 @@ function Announcement($idx){
 }
 
 function PostAnnouncement($announcement){
-    print_r($announcement);
     // validate
     if (empty($announcement)) {
         return "Invalid model";
@@ -49,7 +46,6 @@ function PostAnnouncement($announcement){
 }
 
 function EditAnnouncement($announcement){
-    print_r($announcement);
     // validate
     if (empty($announcement)) {
         return "Invalid model";
@@ -63,8 +59,6 @@ function EditAnnouncement($announcement){
 }
 
 function DeleteAnnouncement($idx){
-    print_r($idx);
-
     if (empty($idx)){
         return "Announcement Id missing";
     } else {
