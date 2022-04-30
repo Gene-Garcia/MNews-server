@@ -13,7 +13,65 @@ function Announcements(){
     foreach($announcements as $announcement){
         array_push($decoded, json_decode(json_encode($announcement), true));
     }    
+
+    // printing will cause error in parsing. Always remove any unecessary prints or outputs
+    // print_r($decoded);
+
     return $decoded;
+}
+
+function Announcement($idx){
+    print_r($idx);
+
+    if (empty($idx)){
+        return "Announcement id missing";
+    } else {
+        global $announcementCtx;
+
+        return $announcementCtx->getAnnouncement($idx);
+    }
+}
+
+function PostAnnouncement($announcement){
+    print_r($announcement);
+    // validate
+    if (empty($announcement)) {
+        return "Invalid model";
+    } else if (empty($announcement->id) || empty($announcement->subject) || empty($announcement->uploadDate) || empty($announcement->content)){
+        return "Incomplete announcement details";
+    } else {
+        global $announcementCtx;
+
+        $announcementCtx->createAnnouncement($announcement);
+
+        return "New announcement " . $announcement->subject . " has been added";
+    }
+}
+
+function EditAnnouncement($announcement){
+    print_r($announcement);
+    // validate
+    if (empty($announcement)) {
+        return "Invalid model";
+    } else if (empty($announcement->id) || empty($announcement->subject) || empty($announcement->uploadDate) || empty($announcement->content)){
+        return "Incomplete announcement details";
+    } else {
+        global $announcementCtx;
+
+        return $announcementCtx->updateAnnouncement($announcement);
+    }
+}
+
+function DeleteAnnouncement($idx){
+    print_r($idx);
+
+    if (empty($idx)){
+        return "Announcement Id missing";
+    } else {
+        global $announcementCtx;
+
+        return $announcementCtx->deleteAnnouncement($idx);
+    }
 }
 
 ?>
