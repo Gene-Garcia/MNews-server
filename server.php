@@ -11,7 +11,7 @@ $server->configureWSDL("MalayanNewsService", $namespace);
 
 // declaration of complex type of array of announcements
 $server->wsdl->addComplexType(
-    "AnnouncementObj",
+    "AnnouncementObject",
     "complexType",
     "struct",
     "all",
@@ -25,7 +25,7 @@ $server->wsdl->addComplexType(
 );
 
 $server->wsdl->addComplexType(
-    "ArrayOfAnnouncementObj",
+    "ArrayOfAnnouncements",
     "complexType",
     "array",
     "",
@@ -34,16 +34,16 @@ $server->wsdl->addComplexType(
     array(
         array(
             "ref" => "SOAP-ENC:arrayType", 
-            "wsdl:arrayType" => "tns:AnnouncementObj[]"
+            "wsdl:arrayType" => "tns:AnnouncementObject[]"
             )               
         ),
-    "tns:AnnouncementObj"
+    "tns:AnnouncementObject"
 );
 
 $server->register(
     "Announcements", 
     array(), 
-    array("return" => "tns:ArrayOfAnnouncementObj"),
+    array("return" => "tns:ArrayOfAnnouncements"),
     // namespace:
     $namespace,
     // soapaction: (use default)
@@ -53,23 +53,51 @@ $server->register(
     // use: encoded or literal
     'encoded',
     // description: documentation for the method
-    'Get all available announcements'
+    'Get all available announcements from mnews server'
 );
 
 $server->register(
     "Announcement",
-    array("idx"=>"xsd:string"),
-    array("return" => "tns:AnnouncementObj"),
-    // namespace:
+    array("id" => "xsd:string"),
+    array("return" => "tns:AnnouncementObject"),
     $namespace,
-    // soapaction: (use default)
     false,
-    // style: rpc or document
-    'rpc',
-    // use: encoded or literal
-    'encoded',
-    // description: documentation for the method
-    'Get an announcement by id'
+    "rpc",
+    "encoded",
+    "Get an announcement by announcement Id"
+);
+
+$server->register(
+    "PostAnnouncement",
+    array("announcement" => "tns:AnnouncementObject"),
+    array("return" => "xsd:string"),
+    $namespace,
+    false,
+    "rpc",
+    "encoded",
+    "Post a new announcement"
+);
+
+$server->register(
+    "EditAnnouncement",
+    array("announcement" => "tns:AnnouncementObject"),
+    array("return" => "xsd:string"),
+    $namespace,
+    false,
+    "rpc",
+    "encoded",
+    "Update an announcement"
+);
+
+$server->register(
+    "DeleteAnnouncement",
+    array("id" => "xsd:string"),
+    array("return" => "xsd:string"),
+    $namespace,
+    false,
+    "rpc",
+    "encoded",
+    "Delete an announcement by announcement Id"
 );
 
 $server->service(file_get_contents("php://input"))
