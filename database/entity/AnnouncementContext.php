@@ -21,6 +21,8 @@ class AnnouncementContext {
 
         fwrite($file, "\n" . implode("|", $rawModel));
 
+        $this->dbCtx->closeFile();
+
         return "Announcement" . $rawModel["subject"] . " successfully posted";
     }
 
@@ -46,6 +48,8 @@ class AnnouncementContext {
                 // skip line
             }
         }
+
+        $this->dbCtx->closeFile();
 
         // no data was found
         if (count($raw) <= 0) {
