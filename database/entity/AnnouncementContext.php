@@ -8,21 +8,14 @@ require_once $_SERVER["DOCUMENT_ROOT"] . "/MNews/MNews-server" . "/models/Announ
  * 
  */
 class AnnouncementContext {
-
-    private $key = "Announcements";
-
     private $dbCtx;
-    private $announcements;
 
-    function __construct($db, $data){
+    function __construct($db){
         $this->dbCtx = $db;
-        // pass by reference
-        // $this->announcements = &$data[$this->key];
     }
 
     function createAnnouncement($rawModel){
         // data passed by client is in raw format not in announcement model
-        
         $this->dbCtx->openFile("ADD");
         $file = &$this->dbCtx->file;
 
