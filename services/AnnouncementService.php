@@ -5,62 +5,72 @@ require_once $_SERVER["DOCUMENT_ROOT"] . "/MNews/MNews-server" . "/models/Announ
 function Announcements(){
     global $announcementCtx;
     
-    $announcements =  $announcementCtx->getAnnouncements();
+    $rawAnnouncements =  $announcementCtx->getAnnouncements();
 
-    // convert Announcement object to an associative array because
-    // the complex type of nusoap cannot serialize an Announcement object
-    $decoded = array();
-    foreach($announcements as $announcement){
-        array_push($decoded, json_decode(json_encode($announcement), true));
-    }    
+    if (gettype($rawAnnouncements) != "array"){
+        // the raw announcement contains a string of error message
+        return array(new Announcement("", "Error", "Try again later", $rawAnnouncements));
+    } else if (count($rawAnnouncements) <= 0){
+        // Empty
+        return array(new Announcement("", "Information", "{date}", "No announcement found"));
+    }
 
     // printing will cause error in parsing. Always remove any unecessary prints or outputs
     // print_r($decoded);
 
-    return $decoded;
+    return $rawAnnouncements;
 }
 
 function Announcement($idx){
     if (empty($idx)){
-        return "Announcement id missing";
+        return array(new Announcement("", "Error", "Try again later", "Announcement id missing"));
     } else {
         global $announcementCtx;
 
-        return $announcementCtx->getAnnouncement($idx);
+        $rawAnnouncement = $announcementCtx->getAnnouncement($idx);
+        
+        if (is_string($announcement)) {
+            // it must have returned an error message, not the announcement
+            return array(new Announcement("", "Error", "Try again later", $announcement));
+        } else {
+            return $rawAnnouncement;
+        }
     }
 }
 
-function PostAnnouncement($announcement){
+function PostAnnouncement($rawAnnouncement){
     // validate
-    if (empty($announcement)) {
+    if (empty($rawAnnouncement)) {
         return "Invalid model";
-    } else if (empty($announcement["id"]) || empty($announcement["subject"]) || empty($announcement["uploadDate"]) || empty($announcement["content"])){
+    } else if (
+        empty($rawAnnouncement["id"]) || 
+        empty($rawAnnouncement["subject"]) || 
+        empty($rawAnnouncement["uploadDate"]) ||
+         empty($rawAnnouncement["content"])){
         return "Incomplete announcement details";
     } else {
         global $announcementCtx;
 
-        // we need to encode array type of announcement to an Announcmenet object 
-        // because data receive is in format of Array([id] => 1234   [subject] => New subject 1234  [uploadDate] => New upload date 1235    [content] => New content 1235)
-        $encoded = new Announcement($announcement["id"], $announcement["subject"], $announcement["uploadDate"], $announcement["content"]);
+        $announcementCtx->createAnnouncement($rawAnnouncement);
 
-        $announcementCtx->createAnnouncement($encoded);
-
-        return "New announcement " . $announcement->subject . " has been added";
+        return "New announcement " . $rawAnnouncement["subject"] . " has been added";
     }
 }
 
-function EditAnnouncement($announcement){
+function EditAnnouncement($rawAnnouncement){
     // validate
-    if (empty($announcement)) {
+    if (empty($rawAnnouncement)) {
         return "Invalid model";
-    } else if (empty($announcement["id"]) || empty($announcement["subject"]) || empty($announcement["uploadDate"]) || empty($announcement["content"])){
+    } else if (
+        empty($rawAnnouncement["id"]) || 
+        empty($rawAnnouncement["subject"]) || 
+        empty($rawAnnouncement["uploadDate"]) || 
+        empty($rawAnnouncement["content"])){
         return "Incomplete announcement details";
     } else {
         global $announcementCtx;
 
-        $encoded = new Announcement($announcement["id"], $announcement["subject"], $announcement["uploadDate"], $announcement["content"]);
-
-        return $announcementCtx->updateAnnouncement($encoded);
+        return $announcementCtx->updateAnnouncement($rawAnnouncement);
     }
 }
 
